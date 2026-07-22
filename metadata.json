@@ -1,0 +1,6 @@
+{
+  "name": "Valtreon Media Network",
+  "description": "Project Understanding Document and Creative Strategy for Valtreon Media Network.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
