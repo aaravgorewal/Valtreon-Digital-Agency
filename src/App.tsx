@@ -41,21 +41,29 @@ import {
   LayoutGrid,
   FileCode,
   Copy,
-  Sparkle,
   Scale,
   MousePointer,
   Maximize,
   Filter,
-  CheckSquare
+  CheckSquare,
+  AlertTriangle,
+  FileText,
+  Search,
+  CheckCircle,
+  HelpCircle,
+  BarChart3,
+  ListFilter
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'principles' | 'personality' | 'direction' | 'document' | 'matrix' | 'visuals' | 'architecture' | 'enquiry'>('principles');
+  const [activeTab, setActiveTab] = useState<'principles' | 'personality' | 'direction' | 'document' | 'matrix' | 'visuals' | 'architecture' | 'enquiry' | 'blueprint'>('blueprint');
   const [viewMode, setViewMode] = useState<'editorial' | 'presentation'>('editorial');
-  const [activeInspiration, setActiveInspiration] = useState<string>('all');
-  const [activeAntiPattern, setActiveAntiPattern] = useState<string>('all');
   const [activePrincipleCategory, setActivePrincipleCategory] = useState<string>('all');
   const [copiedNotification, setCopiedNotification] = useState<boolean>(false);
+  
+  // Interactive Design Audit Tool State
+  const [auditQuery, setAuditQuery] = useState<string>('');
+  const [selectedAuditViolations, setSelectedAuditViolations] = useState<string[]>([]);
   
   // Checklist state for 15 Principles verification
   const [verifiedPrinciples, setVerifiedPrinciples] = useState<Record<number, boolean>>({
@@ -73,8 +81,11 @@ export default function App() {
   };
 
   const handleCopySummary = () => {
-    const summary = `VALTREON MEDIA NETWORK — THE 15 MANDATORY VISUAL PRINCIPLES
-==================================================================
+    const summary = `VALTREON MEDIA NETWORK — THE OFFICIAL DESIGN LANGUAGE & VISUAL SOURCE OF TRUTH
+========================================================================================
+AESTHETIC ARCHETYPE: LUXURY EDITORIAL ("QUIET LUXURY & FINE PRINT")
+
+THE 15 MANDATORY VISUAL PRINCIPLES:
 1. LARGE TYPOGRAPHY: Monumental Cormorant Garamond display serifs (64px-88px) paired with tracking-tight Plus Jakarta Sans.
 2. LOTS OF WHITESPACE: Minimum 65%+ negative space ratio across every fold. Generous 128px-192px section buffers.
 3. MINIMAL COLORS: Warm Alabaster (#FAF8F5), Deep Charcoal (#141414), and Antique Bronze (#8A7963). Zero neon or raw black.
@@ -91,8 +102,9 @@ export default function App() {
 14. DUAL LEAD CONVERSION FUNNELS: Isolated, bespoke intake portals for Enterprise Brands vs. Creator Talent.
 15. INSTITUTIONAL PROOF SEALS: Verified metrics ($50M+ Media, 4.2x ROAS) integrated directly into conversion touchpoints.
 
-STRICTLY BANNED AESTHETICS:
-❌ Hacker Dashboard • ❌ AI Dashboard • ❌ SaaS Dashboard • ❌ Crypto UI • ❌ Cyberpunk • ❌ Gaming UI`;
+STRICTLY BANNED AESTHETICS (IMMEDIATE REJECTION CRITERIA):
+❌ Hacker Dashboard • ❌ AI Dashboard • ❌ SaaS Dashboard • ❌ Crypto UI • ❌ Cyberpunk • ❌ Gaming UI
+❌ Purple-to-blue gradients • ❌ Neon glows • ❌ Nested cards inside cards • ❌ Bouncy spring animations`;
 
     navigator.clipboard.writeText(summary);
     setCopiedNotification(true);
@@ -273,6 +285,23 @@ STRICTLY BANNED AESTHETICS:
     return p.category === activePrincipleCategory;
   });
 
+  const antiPatternsList = [
+    { id: 'hacker', name: 'Hacker Dashboard', icon: Terminal, desc: 'Green-on-black monospace text, terminal prompts, raw code feeds.', fix: 'Replace with editorial typography and Alabaster canvas.' },
+    { id: 'ai', name: 'AI Dashboard', icon: Bot, desc: 'Glowing purple/cyan gradients, floating prompt boxes, pulsing particle waves.', fix: 'Remove glow effects and synthetic gradient cards.' },
+    { id: 'saas', name: 'SaaS Dashboard', icon: LayoutGrid, desc: 'Dense multi-column sidebars, packed data tables with status pills.', fix: 'Flatten layout hierarchy, increase whitespace, remove sidebars.' },
+    { id: 'crypto', name: 'Crypto UI', icon: Coins, desc: 'Web3 wallet connectors, dark glassmorphism, volatile ticker banners.', fix: 'Use quiet neutral containers and static institutional seals.' },
+    { id: 'cyberpunk', name: 'Cyberpunk', icon: Cpu, desc: 'Glitch animations, neon overlays, scan lines, dystopian HUDs.', fix: 'Adopt warm luxury tones (#FAF8F5, #8A7963) and clean serif headings.' },
+    { id: 'gaming', name: 'Gaming UI', icon: Gamepad2, desc: 'Health bars, metallic borders, particle explosions, level-up meters.', fix: 'Eliminate arcade styling; replace with high-fashion editorial grid.' }
+  ];
+
+  const toggleViolation = (id: string) => {
+    if (selectedAuditViolations.includes(id)) {
+      setSelectedAuditViolations(prev => prev.filter(v => v !== id));
+    } else {
+      setSelectedAuditViolations(prev => [...prev, id]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1A1A1A] font-sans-body">
       {/* Top Bar / Header */}
@@ -283,10 +312,10 @@ STRICTLY BANNED AESTHETICS:
             <div>
               <div className="flex items-center space-x-2">
                 <span className="text-xs tracking-widest uppercase font-semibold text-[#8A7963]">Valtreon Media Network</span>
-                <span className="text-xs px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E] font-mono">Brand Personality & Design System</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E] font-mono">Design System Specification & Source of Truth</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-serif-display font-medium text-[#1A1A1A] tracking-tight">
-                Brand Personality, Creative Direction & Visual Principles
+                Official Design Language Master Document
               </h1>
             </div>
           </div>
@@ -313,7 +342,7 @@ STRICTLY BANNED AESTHETICS:
               className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-[#F2EDE4] hover:bg-[#EBE7DF] border border-[#DCD6CA] rounded text-xs font-medium text-[#1A1A1A] transition-colors"
             >
               <Copy className="w-3.5 h-3.5 text-[#5A5245]" />
-              <span>{copiedNotification ? 'Copied Specs!' : 'Copy 15 Principles & Guide'}</span>
+              <span>{copiedNotification ? 'Copied Brief Specs!' : 'Copy Brief Summary'}</span>
             </button>
 
             <button
@@ -329,7 +358,7 @@ STRICTLY BANNED AESTHETICS:
 
       {/* Navigation Sub-Header */}
       <nav className="border-b border-[#EBE7DF] bg-[#FAF8F5] no-print px-4 sm:px-8 py-2 sticky top-[73px] z-40 overflow-x-auto">
-        <div className="max-w-7xl mx-auto flex items-center space-x-1 sm:space-x-4 text-xs sm:text-sm font-medium whitespace-nowrap">
+        <div className="max-w-7xl mx-auto flex items-center space-x-1 sm:space-x-3 text-xs sm:text-sm font-medium whitespace-nowrap">
           <button
             onClick={() => setActiveTab('principles')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'principles' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
@@ -340,43 +369,49 @@ STRICTLY BANNED AESTHETICS:
             onClick={() => setActiveTab('personality')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'personality' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            01. Brand Personality Guide
+            01. Brand Personality & Banned UI
           </button>
           <button
             onClick={() => setActiveTab('direction')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'direction' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            02. Creative Direction
+            02. Creative Directions & Winner
           </button>
           <button
             onClick={() => setActiveTab('document')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'document' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            03. Executive Overview
+            03. Final Brief Source of Truth
           </button>
           <button
             onClick={() => setActiveTab('matrix')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'matrix' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            04. User Matrix
+            04. Design Audit & Rejection Engine
           </button>
           <button
             onClick={() => setActiveTab('visuals')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'visuals' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            05. Aesthetic Guardrails
+            05. Layout, Type & Color Guardrails
           </button>
           <button
             onClick={() => setActiveTab('architecture')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'architecture' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            06. Site Architecture
+            06. Section Moodboard Philosophy
           </button>
           <button
             onClick={() => setActiveTab('enquiry')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'enquiry' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
             07. Dual Lead Schema
+          </button>
+          <button
+            onClick={() => setActiveTab('blueprint')}
+            className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'blueprint' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
+          >
+            ★ 08. Homepage Blueprint Architecture
           </button>
         </div>
       </nav>
@@ -388,7 +423,7 @@ STRICTLY BANNED AESTHETICS:
         <div className="mb-16 border-b border-[#DCD6CA] pb-12">
           <div className="flex flex-wrap items-center justify-between text-xs tracking-wider uppercase text-[#8A7963] font-mono mb-4 gap-2">
             <span className="flex items-center gap-1.5"><Crown className="w-3.5 h-3.5 text-[#8A7963]" /> VALTREON MEDIA NETWORK • DESIGN SYSTEM SPECIFICATION</span>
-            <span>VERSION 2.4 (FINAL)</span>
+            <span>VERSION 3.0 (FINAL SOURCE OF TRUTH)</span>
           </div>
           
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif-display font-light text-[#1A1A1A] leading-[1.08] tracking-tight mb-6">
@@ -396,7 +431,7 @@ STRICTLY BANNED AESTHETICS:
           </h1>
           
           <p className="text-lg sm:text-xl font-serif-display italic text-[#5A5245] max-w-3xl leading-relaxed mb-8">
-            "An editorial luxury digital presence governed by 15 strict visual principles—delivering quiet confidence, institutional trust, and unhurried design craftsmanship across every future page fold."
+            "The official visual source of truth combining every design specification into one definitive brief. Every future design must comply with these rules or be strictly rejected."
           </p>
 
           {/* Quick Pillar Summary Grid */}
@@ -406,25 +441,24 @@ STRICTLY BANNED AESTHETICS:
               <span className="text-[#1A1A1A] font-semibold">15 Mandatory Rules</span>
             </div>
             <div>
-              <span className="block text-[#8A7963] uppercase tracking-wider text-[10px] mb-1">Primary Voice</span>
-              <span className="text-[#1A1A1A] font-semibold">Measured & Editorial</span>
+              <span className="block text-[#8A7963] uppercase tracking-wider text-[10px] mb-1">Visual Archetype</span>
+              <span className="text-[#1A1A1A] font-semibold">Direction A: Luxury Editorial</span>
             </div>
             <div>
-              <span className="block text-[#8A7963] uppercase tracking-wider text-[10px] mb-1">Aesthetic Archetype</span>
-              <span className="text-[#1A1A1A] font-semibold">Quiet Luxury & Fine Print</span>
+              <span className="block text-[#8A7963] uppercase tracking-wider text-[10px] mb-1">Color System</span>
+              <span className="text-[#1A1A1A] font-semibold">90% Neutrals / 10% Accent</span>
             </div>
             <div>
-              <span className="block text-[#8A7963] uppercase tracking-wider text-[10px] mb-1">Scope Compliance</span>
-              <span className="text-[#1A1A1A] font-semibold">Strict Rule Enforcement</span>
+              <span className="block text-[#8A7963] uppercase tracking-wider text-[10px] mb-1">Rejection Standard</span>
+              <span className="text-[#1A1A1A] font-semibold">Zero SaaS / Cyberpunk UI</span>
             </div>
           </div>
         </div>
 
-        {/* SECTION 0: THE 15 MANDATORY VISUAL PRINCIPLES (PRIMARY TAB) */}
+        {/* TAB 0: THE 15 MANDATORY VISUAL PRINCIPLES */}
         {(activeTab === 'principles' || viewMode === 'presentation') && (
           <section className="mb-20 space-y-16">
             
-            {/* Header Banner */}
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
               <div>
                 <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 00</span>
@@ -433,7 +467,6 @@ STRICTLY BANNED AESTHETICS:
               <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-PRINCIPLES-2026</span>
             </div>
 
-            {/* Principle Manifesto Box */}
             <div className="p-8 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-4">
               <div className="flex items-center space-x-2 text-[#A38B68]">
                 <Sparkles className="w-4 h-4" />
@@ -442,10 +475,6 @@ STRICTLY BANNED AESTHETICS:
               <blockquote className="font-serif-display text-2xl sm:text-3xl font-light italic leading-relaxed text-[#FAF8F5]">
                 "Every page, section, component, and interaction in the Valtreon Media Network ecosystem MUST adhere strictly to these 15 visual principles. No exceptions, no shortcuts, and no compromises."
               </blockquote>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-[#333] text-xs text-[#AAA] gap-2">
-                <span>Verification Status: 15 / 15 Rules Enforced for Future Pages</span>
-                <span className="font-mono text-[#A38B68]">QUIET LUXURY • EDITORIAL MINIMALISM • INSTITUTIONAL TRUST</span>
-              </div>
             </div>
 
             {/* Category Filter Pills */}
@@ -481,7 +510,7 @@ STRICTLY BANNED AESTHETICS:
               </div>
             </div>
 
-            {/* THE 15 PRINCIPLES CARDS GRID */}
+            {/* Principles Cards */}
             <div className="grid grid-cols-1 gap-8">
               {filteredPrinciples.map((p) => {
                 const IconComponent = p.icon;
@@ -492,7 +521,6 @@ STRICTLY BANNED AESTHETICS:
                     key={p.num} 
                     className={`border border-[#DCD6CA] rounded-xl p-6 sm:p-8 space-y-6 transition-all hover:border-[#8A7963] ${p.bgGradient}`}
                   >
-                    {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#EBE7DF] pb-4 gap-3">
                       <div className="flex items-center space-x-3">
                         <span className="w-10 h-10 rounded-lg bg-[#F2EDE4] border border-[#DCD6CA] flex items-center justify-center font-mono font-bold text-sm text-[#8A7963]">
@@ -500,13 +528,12 @@ STRICTLY BANNED AESTHETICS:
                         </span>
                         <div>
                           <span className="text-[10px] font-mono uppercase tracking-widest text-[#8A7963] block">PRINCIPLE {p.num} • {p.category.toUpperCase()}</span>
-                          <h3 className="text-2xl font-serif-display font-semibold text-[#1A1A1A] flex items-center gap-2">
+                          <h3 className="text-2xl font-serif-display font-semibold text-[#1A1A1A]">
                             {p.title}
                           </h3>
                         </div>
                       </div>
 
-                      {/* Verification Badge Toggle */}
                       <button
                         onClick={() => togglePrincipleVerification(p.num)}
                         className={`inline-flex items-center space-x-2 px-3 py-1.5 rounded text-xs font-mono transition-colors border ${
@@ -520,7 +547,6 @@ STRICTLY BANNED AESTHETICS:
                       </button>
                     </div>
 
-                    {/* Summary & Design Specs */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-[#4A453E]">
                       <div className="space-y-2">
                         <span className="font-semibold text-[#1A1A1A] block uppercase tracking-wider text-[10px]">Strategic Rationale:</span>
@@ -537,14 +563,12 @@ STRICTLY BANNED AESTHETICS:
                       </div>
                     </div>
 
-                    {/* Live Visual Spec Preview Box */}
                     <div className="p-4 sm:p-5 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-2">
                       <div className="flex items-center justify-between text-[10px] font-mono text-[#8A7963] uppercase tracking-wider">
                         <span className="flex items-center gap-1"><IconComponent className="w-3.5 h-3.5 text-[#8A7963]" /> Live Visual Spec Preview</span>
                         <span>COMPONENT EXEMPLAR</span>
                       </div>
                       
-                      {/* Interactive Visual Render Based on Principle */}
                       <div className="pt-2">
                         {p.num === 1 && (
                           <div className="font-serif-display text-2xl sm:text-4xl text-[#1A1A1A] font-light leading-tight tracking-tight border-l-2 border-[#8A7963] pl-4 py-1">
@@ -580,7 +604,7 @@ STRICTLY BANNED AESTHETICS:
                           </div>
                         )}
                         {p.num === 5 && (
-                          <div className="aspect-[16/6] bg-[#EBE7DF] rounded border border-[#DCD6CA] flex items-center justify-center text-xs font-mono text-[#6A6356] bg-cover bg-center" style={{ backgroundImage: 'radial-gradient(#DCD6CA 1px, transparent 1px)', backgroundSize: '16px 16px' }}>
+                          <div className="aspect-[16/6] bg-[#EBE7DF] rounded border border-[#DCD6CA] flex items-center justify-center text-xs font-mono text-[#6A6356] bg-cover bg-center">
                             [ High-Fashion Framed Editorial Gallery Visual Container — 16:9 Aspect Ratio ]
                           </div>
                         )}
@@ -650,7 +674,6 @@ STRICTLY BANNED AESTHETICS:
                       </div>
                     </div>
 
-                    {/* Mandatory Rule for Future Pages */}
                     <div className="p-3.5 bg-[#141414] text-[#FAF8F5] rounded-lg flex items-start space-x-3 text-xs">
                       <ShieldCheck className="w-4 h-4 text-[#A38B68] shrink-0 mt-0.5" />
                       <div>
@@ -666,43 +689,21 @@ STRICTLY BANNED AESTHETICS:
               })}
             </div>
 
-            {/* Quick Principles Compliance Summary Matrix */}
-            <div className="p-8 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
-              <div className="border-b border-[#EBE7DF] pb-3 flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] font-mono text-[#8A7963] uppercase tracking-widest block mb-1">DESIGN SYSTEM COMPLIANCE SUMMARY</span>
-                  <h3 className="text-xl font-serif-display font-medium text-[#1A1A1A]">Future Page Build Checklist</h3>
-                </div>
-                <span className="text-xs font-mono px-3 py-1 bg-[#141414] text-[#FAF8F5] rounded">15 / 15 ACTIVE RULES</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                {visualPrinciples.map((p) => (
-                  <div key={p.num} className="p-3 bg-[#F2EDE4]/60 border border-[#DCD6CA] rounded flex items-center justify-between font-medium">
-                    <span className="text-[#1A1A1A]">{p.num}. {p.title}</span>
-                    <CheckCircle2 className="w-4 h-4 text-[#8A7963] shrink-0" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
           </section>
         )}
 
-        {/* SECTION 1: BRAND PERSONALITY GUIDE */}
+        {/* TAB 1: BRAND PERSONALITY GUIDE & BANNED UI */}
         {(activeTab === 'personality' || viewMode === 'presentation') && (
           <section className="mb-20 space-y-16">
             
-            {/* Header Banner */}
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
               <div>
                 <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 01</span>
-                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Brand Personality Guide</h2>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Brand Personality & Banned UI</h2>
               </div>
               <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-PERSONALITY-2026</span>
             </div>
 
-            {/* Introductory Manifesto */}
             <div className="p-8 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-4">
               <div className="flex items-center space-x-2 text-[#A38B68]">
                 <Sparkles className="w-4 h-4" />
@@ -711,189 +712,34 @@ STRICTLY BANNED AESTHETICS:
               <blockquote className="font-serif-display text-2xl sm:text-3xl font-light italic leading-relaxed text-[#FAF8F5]">
                 "Valtreon does not shout to be heard. We speak with the quiet authority of an established private institution. True luxury does not rely on neon glows, frantic animations, or artificial hype—it relies on flawless execution, generous whitespace, and undeniable results."
               </blockquote>
-              <div className="flex items-center justify-between pt-4 border-t border-[#333] text-xs text-[#AAA]">
-                <span>Valtreon Media Network • Brand Persona Framework</span>
-                <span className="font-mono text-[#A38B68]">MINIMAL • LUXURY • EDITORIAL</span>
-              </div>
             </div>
 
-            {/* 8 CORE PERSONALITY PILLARS */}
-            <div className="space-y-8">
-              <div className="flex items-baseline justify-between border-b border-[#EBE7DF] pb-2">
-                <h3 className="text-2xl font-serif-display text-[#1A1A1A]">The 8 Dimensions of Brand Personality</h3>
-                <span className="text-xs font-mono text-[#8A7963]">8 CORE PILLARS</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {/* 1. Voice */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
+            {/* 8 Core Personality Pillars */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                { title: '1. Voice', tag: 'MEASURED & EDITORIAL', icon: Type, desc: 'Valtreon’s voice is measured, authoritative, editorial, and institutional. We speak like a high-end publication (Vogue, Financial Times, Monocle) or a global private equity firm.' },
+                { title: '2. Tone', tag: 'CALM & POLISHED', icon: Compass, desc: 'Our tone is calm, precise, polished, and discreet. We deliver campaign insights and data points with quiet clarity, never rushed, anxious, or pushy.' },
+                { title: '3. Emotion', tag: 'REASSURANCE & PRESTIGE', icon: Heart, desc: 'The emotional response we evoke is deep reassurance, prestige, ambition, and composure. Brand Directors feel their capital is handled with utmost care.' },
+                { title: '4. Confidence', tag: 'UNSHAKEABLE & PROVEN', icon: ShieldCheck, desc: 'Confidence at Valtreon is unshakeable and understated. We do not beg for business; we showcase $50M+ in campaign volume and 4.2x average ROAS.' },
+                { title: '5. Luxury', tag: 'QUIET LUXURY & FINE PRINT', icon: Crown, desc: 'Luxury is expressed as Quiet Luxury ("if you know, you know"). Soft alabaster background canvas (#FAF8F5), deep charcoal typography, and subtle antique bronze.' },
+                { title: '6. Trust', tag: 'INSTITUTIONAL & TRANSPARENT', icon: Lock, desc: 'Trust is built through absolute operational transparency. Clear licensing terms, multi-tier brand safety, and third-party verified ROAS tracking.' },
+                { title: '7. Professionalism', tag: 'WHITE-GLOVE ENTERPRISE', icon: Briefcase, desc: 'Professionalism is uncompromising white-glove service. Dedicated campaign strategists, structured multi-stage approvals, and executive-ready reports.' },
+                { title: '8. Innovation', tag: 'ALGORITHMIC PRECISION', icon: Zap, desc: 'Innovation means algorithmic creator matching and real-time performance tracking—delivered seamlessly without polluting the UI with synthetic AI jargon.' }
+              ].map((p, idx) => (
+                <div key={idx} className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
                   <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
                     <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Type className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">1. Voice</h4>
+                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><p.icon className="w-4 h-4" /></span>
+                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">{p.title}</h4>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">MEASURED & EDITORIAL</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">{p.tag}</span>
                   </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Valtreon’s voice is <strong>measured, authoritative, editorial, and institutional</strong>. We speak like a high-end publication (e.g. Vogue, Financial Times, Monocle) or a global private equity firm. We avoid casual jargon, marketing hype, or exclamation marks.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">DO:</span>
-                      "Valtreon structures creator partnerships with the financial rigor of enterprise asset allocation."
-                    </div>
-                    <div className="p-2 bg-red-50/50 border border-red-200/60 rounded text-red-900">
-                      <span className="font-semibold text-red-700 block text-[10px] uppercase">DON'T:</span>
-                      "Get ready to skyrocket your sales overnight with our super hot viral influencer hacks!"
-                    </div>
-                  </div>
+                  <p className="text-xs text-[#4A453E] leading-relaxed">{p.desc}</p>
                 </div>
-
-                {/* 2. Tone */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Compass className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">2. Tone</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">CALM & POLISHED</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Our tone is <strong>calm, precise, polished, and discreet</strong>. We deliver campaign insights and data points with quiet clarity. We never sound rushed, anxious, or pushy. Every statement is framed as an objective truth supported by trackable media metrics.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">KEY TONAL ATTRIBUTES:</span>
-                      Restrained vocabulary • Exact ROI figures • Discreet client references • Zero clutter.
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. Emotion */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Heart className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">3. Emotion</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">REASSURANCE & PRESTIGE</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    The emotional response we evoke is <strong>deep reassurance, prestige, ambition, and composure</strong>. Brand Directors feel their capital is handled with utmost care. Creators feel honored and elevated to be represented on the roster.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">TARGET USER FEELING:</span>
-                      "I am dealing with world-class professionals who treat influencer marketing as a serious discipline."
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. Confidence */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><ShieldCheck className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">4. Confidence</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">UNSHAKEABLE & PROVEN</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Confidence at Valtreon is <strong>unshakeable, proven, and understated</strong>. We do not beg for business or post loud discount banners. We showcase $50M+ in campaign volume, 4.2x average ROAS, and let the work speak for itself.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">DISCIPLINE:</span>
-                      No popups, no countdown timers, no "Limited spots left!" sales triggers.
-                    </div>
-                  </div>
-                </div>
-
-                {/* 5. Luxury */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Crown className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">5. Luxury</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">QUIET LUXURY & FINE PRINT</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Luxury is expressed as <strong>Quiet Luxury ("if you know, you know")</strong>. Soft alabaster background canvas (#FAF8F5), deep charcoal typography (#141414), subtle antique bronze accents (#8A7963), and 65%+ whitespace.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">AESTHETIC BENCHMARKS:</span>
-                      Cormorant Garamond display serifs, 1px warm borders, unhurried scroll inertia.
-                    </div>
-                  </div>
-                </div>
-
-                {/* 6. Trust */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Lock className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">6. Trust</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">INSTITUTIONAL & TRANSPARENT</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Trust is built through <strong>absolute operational transparency</strong>. Transparent content licensing terms, multi-tier brand safety verification, clear contract rights management, and third-party verified ROAS tracking.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">TRUST SIGNALS:</span>
-                      Enterprise IP licensing, guaranteed creator payout schedules, legal safety seals.
-                    </div>
-                  </div>
-                </div>
-
-                {/* 7. Professionalism */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Briefcase className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">7. Professionalism</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">WHITE-GLOVE ENTERPRISE</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Professionalism is <strong>uncompromising white-glove service</strong>. Dedicated campaign strategists, structured multi-stage approvals, prompt creator compensation, and clean, executive-ready performance reports.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">WORKFLOW:</span>
-                      Clear SLA timelines, structured intake forms, zero friction communication.
-                    </div>
-                  </div>
-                </div>
-
-                {/* 8. Innovation */}
-                <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#EBE7DF] pb-3">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="p-2 bg-[#F2EDE4] rounded text-[#8A7963]"><Zap className="w-4 h-4" /></span>
-                      <h4 className="text-lg font-serif-display font-medium text-[#1A1A1A]">8. Innovation</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBE7DF] text-[#4A453E]">ALGORITHMIC PRECISION</span>
-                  </div>
-                  <p className="text-xs text-[#4A453E] leading-relaxed">
-                    Innovation means <strong>algorithmic creator matching and real-time performance tracking</strong>—delivered seamlessly without polluting the UI with synthetic AI jargon or sci-fi visual gimmicks.
-                  </p>
-                  <div className="space-y-2 pt-2 text-[11px] border-t border-[#EBE7DF]">
-                    <div className="p-2 bg-[#F2EDE4] rounded text-[#3D3830]">
-                      <span className="font-semibold text-[#8A7963] block text-[10px] uppercase">RULE:</span>
-                      Advanced backend technology wrapped in elegant, timeless human design.
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+              ))}
             </div>
 
-            {/* BANNED AESTHETICS (WHAT THE WEBSITE SHOULD NEVER LOOK LIKE) */}
+            {/* Banned Aesthetics Grid */}
             <div className="space-y-8 pt-8 border-t border-[#DCD6CA]">
               <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#EBE7DF] pb-3 gap-2">
                 <div>
@@ -903,98 +749,768 @@ STRICTLY BANNED AESTHETICS:
                 <span className="text-xs font-mono text-red-800 bg-red-100/60 px-2.5 py-1 rounded">6 BANNED AESTHETICS</span>
               </div>
 
-              <p className="text-sm text-[#5A5245] max-w-3xl leading-relaxed">
-                To preserve the editorial prestige and institutional trust of Valtreon Media Network, the design system strictly bans the following six ubiquitous visual tropes. Each represents a failure of brand alignment.
-              </p>
-
-              {/* Banned Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {/* Anti-Pattern 1: Hacker Dashboard */}
-                <div className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
-                    <div className="flex items-center space-x-2.5 text-red-800">
-                      <Terminal className="w-5 h-5" />
-                      <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">1. Hacker Dashboard</h4>
+                {antiPatternsList.map((ap) => {
+                  const IconComp = ap.icon;
+                  return (
+                    <div key={ap.id} className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
+                      <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
+                        <div className="flex items-center space-x-2.5 text-red-800">
+                          <IconComp className="w-5 h-5" />
+                          <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">{ap.name}</h4>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
+                      </div>
+                      <p className="text-xs text-[#5A5245] leading-relaxed">{ap.desc}</p>
+                      <div className="p-2.5 bg-red-50 rounded border border-red-200 text-[11px] text-red-900 font-mono">
+                        <span className="font-bold uppercase text-[10px] block text-red-800">Required Correction:</span>
+                        {ap.fix}
+                      </div>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
-                  </div>
-                  <p className="text-xs text-[#5A5245] leading-relaxed">
-                    Green-on-black monospace text, terminal prompts, ASCII art, and raw command line feeds signal unsanctioned underground operations.
-                  </p>
-                </div>
-
-                {/* Anti-Pattern 2: AI Dashboard */}
-                <div className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
-                    <div className="flex items-center space-x-2.5 text-red-800">
-                      <Bot className="w-5 h-5" />
-                      <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">2. AI Dashboard</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
-                  </div>
-                  <p className="text-xs text-[#5A5245] leading-relaxed">
-                    Glowing purple/cyan gradients, floating prompt text boxes, pulsing orb animations, and synthetic particle waves feel cheap and automated.
-                  </p>
-                </div>
-
-                {/* Anti-Pattern 3: SaaS Dashboard */}
-                <div className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
-                    <div className="flex items-center space-x-2.5 text-red-800">
-                      <LayoutGrid className="w-5 h-5" />
-                      <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">3. SaaS Dashboard</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
-                  </div>
-                  <p className="text-xs text-[#5A5245] leading-relaxed">
-                    Dense multi-column sidebars, packed data tables with 50 status pills, sticky chat widgets, and frantic analytics cards clutter the public layout.
-                  </p>
-                </div>
-
-                {/* Anti-Pattern 4: Crypto UI */}
-                <div className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
-                    <div className="flex items-center space-x-2.5 text-red-800">
-                      <Coins className="w-5 h-5" />
-                      <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">4. Crypto UI</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
-                  </div>
-                  <p className="text-xs text-[#5A5245] leading-relaxed">
-                    Flashing "To the Moon" tickers, web3 wallet connect buttons, dark-mode glassmorphism overload, and volatile speculative charts signal risk.
-                  </p>
-                </div>
-
-                {/* Anti-Pattern 5: Cyberpunk */}
-                <div className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
-                    <div className="flex items-center space-x-2.5 text-red-800">
-                      <Cpu className="w-5 h-5" />
-                      <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">5. Cyberpunk</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
-                  </div>
-                  <p className="text-xs text-[#5A5245] leading-relaxed">
-                    Glitch animations, neon pink/cyan overlays, scan lines, HUD crosshairs, and dystopian sci-fi fonts ruin editorial dignity.
-                  </p>
-                </div>
-
-                {/* Anti-Pattern 6: Gaming UI */}
-                <div className="bg-[#FAF8F5] border-2 border-red-800/30 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-red-200/80 pb-3">
-                    <div className="flex items-center space-x-2.5 text-red-800">
-                      <Gamepad2 className="w-5 h-5" />
-                      <h4 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">6. Gaming UI</h4>
-                    </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-red-100 text-red-800 rounded font-bold">STRICTLY BANNED</span>
-                  </div>
-                  <p className="text-xs text-[#5A5245] leading-relaxed">
-                    Health bar indicators, arcade badges, metallic borders, particle explosion buttons, and level-up meters trivialize enterprise investments.
-                  </p>
-                </div>
-
+                  );
+                })}
               </div>
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 2: CREATIVE DIRECTIONS & WINNER */}
+        {(activeTab === 'direction' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 02</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Creative Directions & Winning Selection</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-DIRECTIONS-2026</span>
+            </div>
+
+            {/* 3 Directions Comparison Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Direction A - WINNER */}
+              <div className="p-6 bg-[#FAF8F5] border-2 border-[#8A7963] rounded-xl space-y-4 relative shadow-md">
+                <span className="absolute -top-3 right-4 px-3 py-0.5 bg-[#8A7963] text-[#FAF8F5] text-[10px] font-mono font-bold uppercase rounded">
+                  RECOMMENDED WINNER
+                </span>
+                <div className="border-b border-[#EBE7DF] pb-3">
+                  <span className="text-[10px] font-mono text-[#8A7963] uppercase tracking-widest">DIRECTION A</span>
+                  <h3 className="text-2xl font-serif-display text-[#1A1A1A] font-semibold">Luxury Editorial</h3>
+                </div>
+                <p className="text-xs text-[#4A453E] leading-relaxed">
+                  High-fashion magazine aesthetic with generous whitespace, monumental serif typography, warm alabaster canvas, and framed image exhibits.
+                </p>
+                <ul className="text-[11px] space-y-2 text-[#3D3830] font-mono border-t border-[#EBE7DF] pt-3">
+                  <li>• Typography: Cormorant Garamond</li>
+                  <li>• Palette: Alabaster / Onyx / Bronze</li>
+                  <li>• Layout: 12-col Golden Ratio</li>
+                  <li>• Vibe: Vogue / Monocle Prestige</li>
+                </ul>
+                <div className="p-3 bg-[#141414] text-[#FAF8F5] rounded text-[11px] font-mono">
+                  ★ Selected for Valtreon Media Network for unmatched institutional authority and luxury positioning.
+                </div>
+              </div>
+
+              {/* Direction B */}
+              <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] opacity-80 rounded-xl space-y-4">
+                <div className="border-b border-[#EBE7DF] pb-3">
+                  <span className="text-[10px] font-mono text-[#8A7963] uppercase tracking-widest">DIRECTION B</span>
+                  <h3 className="text-2xl font-serif-display text-[#1A1A1A]">Modern Tech Premium</h3>
+                </div>
+                <p className="text-xs text-[#4A453E] leading-relaxed">
+                  Linear/Stripe inspired dark mode UI with high density data tables, dark graphite surfaces, and tight micro-interactions.
+                </p>
+                <ul className="text-[11px] space-y-2 text-[#3D3830] font-mono border-t border-[#EBE7DF] pt-3">
+                  <li>• Typography: Inter / SF Pro</li>
+                  <li>• Palette: Dark Graphite / Slate</li>
+                  <li>• Layout: Dense Grid</li>
+                  <li>• Vibe: Developer Tool / B2B SaaS</li>
+                </ul>
+                <div className="p-3 bg-red-50 border border-red-200 text-red-900 rounded text-[11px] font-mono">
+                  ❌ Rejected: Feels too much like a software dashboard rather than a luxury talent agency.
+                </div>
+              </div>
+
+              {/* Direction C */}
+              <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] opacity-80 rounded-xl space-y-4">
+                <div className="border-b border-[#EBE7DF] pb-3">
+                  <span className="text-[10px] font-mono text-[#8A7963] uppercase tracking-widest">DIRECTION C</span>
+                  <h3 className="text-2xl font-serif-display text-[#1A1A1A]">Creative Agency</h3>
+                </div>
+                <p className="text-xs text-[#4A453E] leading-relaxed">
+                  Experimental brutalist typography, oversized bold elements, high contrast neon pop accents, and kinetic scroll triggers.
+                </p>
+                <ul className="text-[11px] space-y-2 text-[#3D3830] font-mono border-t border-[#EBE7DF] pt-3">
+                  <li>• Typography: Syne / Space Grotesk</li>
+                  <li>• Palette: Raw Off-White / Acid Lime</li>
+                  <li>• Layout: Asymmetric Chaos</li>
+                  <li>• Vibe: Trendy Boutique Studio</li>
+                </ul>
+                <div className="p-3 bg-red-50 border border-red-200 text-red-900 rounded text-[11px] font-mono">
+                  ❌ Rejected: Lacks enterprise seriousness required by Fortune 500 brand CMOs.
+                </div>
+              </div>
+
+            </div>
+
+            {/* Why Direction A Wins Detailed Rationale */}
+            <div className="p-8 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-6">
+              <div className="flex items-center space-x-2 text-[#A38B68]">
+                <Award className="w-5 h-5" />
+                <span className="text-xs font-mono uppercase tracking-widest">CREATIVE DIRECTOR RECOMMENDATION REPORT</span>
+              </div>
+              <h3 className="text-3xl font-serif-display font-light">Why Direction A (Luxury Editorial) is the Sole Source of Truth</h3>
+              <p className="text-sm text-[#DDD] leading-relaxed max-w-4xl">
+                Valtreon Media Network bridges two elite worlds: Fortune 500 Chief Marketing Officers managing $50M+ annual budgets, and Tier-1 digital creators with millions of hyper-engaged followers. Direction A provides the exact cultural authority needed for both audiences. It elevates creator campaigns into high-art brand partnerships while giving enterprise buyers the confidence of a private wealth management firm.
+              </p>
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 3: FINAL BRIEF SOURCE OF TRUTH (EXECUTIVE OVERVIEW) */}
+        {(activeTab === 'document' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 03</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Final Creative Brief Source of Truth</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-BRIEF-TRUTH-2026</span>
+            </div>
+
+            <div className="space-y-8 p-8 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl text-sm leading-relaxed text-[#3D3830]">
+              <div className="border-b border-[#EBE7DF] pb-4">
+                <span className="text-xs font-mono text-[#8A7963] uppercase tracking-widest block mb-1">SECTION 1: PURPOSE & CORE AUTHORITY</span>
+                <h3 className="text-2xl font-serif-display font-semibold text-[#1A1A1A]">Definitive Visual Mandate</h3>
+                <p className="mt-2 text-xs text-[#5A5245]">
+                  This Creative Brief serves as the absolute visual and structural source of truth for Valtreon Media Network. Every future page, mock, component, layout, or design asset created for Valtreon MUST conform exactly to the rules outlined here. Any design proposal violating these parameters must be instantly rejected and corrected.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-[#EBE7DF] pb-8">
+                <div className="space-y-3">
+                  <h4 className="font-serif-display text-lg text-[#1A1A1A] font-semibold">Core Audience Split</h4>
+                  <ul className="space-y-2 text-xs font-mono">
+                    <li className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                      <strong className="text-[#1A1A1A] block mb-0.5">Enterprise Brand Directors:</strong>
+                      Demands institutional safety, verified metrics, legal protection, and white-glove account management.
+                    </li>
+                    <li className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                      <strong className="text-[#1A1A1A] block mb-0.5">Tier-1 Creator Roster:</strong>
+                      Demands prestige representation, elevated aesthetic framing, transparent payout schedules, and career growth.
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="font-serif-display text-lg text-[#1A1A1A] font-semibold">Aesthetic Pillar Matrix</h4>
+                  <ul className="space-y-2 text-xs font-mono">
+                    <li className="p-2.5 bg-[#FAF8F5] border-l-2 border-[#8A7963]">
+                      <strong>Canvas:</strong> Soft Warm Alabaster (#FAF8F5)
+                    </li>
+                    <li className="p-2.5 bg-[#FAF8F5] border-l-2 border-[#141414]">
+                      <strong>Typography:</strong> Cormorant Garamond Display + Plus Jakarta Sans
+                    </li>
+                    <li className="p-2.5 bg-[#FAF8F5] border-l-2 border-[#8A7963]">
+                      <strong>Accents:</strong> Antique Bronze (#8A7963)
+                    </li>
+                    <li className="p-2.5 bg-[#FAF8F5] border-l-2 border-[#DCD6CA]">
+                      <strong>Proportion:</strong> 90% Neutral Space / 10% Targeted Accent
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-serif-display text-xl text-[#1A1A1A] font-semibold">Mandatory Compliance Statement</h4>
+                <div className="p-4 bg-[#141414] text-[#FAF8F5] rounded-lg font-mono text-xs leading-relaxed space-y-2">
+                  <p className="text-[#A38B68] font-bold">REJECTION CRITERIA FOR ALL FUTURE DESIGNS:</p>
+                  <p className="text-[#DDD]">
+                    If a proposed design contains: (1) Cyberpunk neon colors, (2) SaaS dashboard sidebar drawers, (3) Glowing particle effects, (4) Nested card boxes, (5) Symmetrical 3-column stock grids, or (6) Bouncy spring animations — IT MUST BE IMMEDIATELY REJECTED.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 4: DESIGN AUDIT & REJECTION ENGINE */}
+        {(activeTab === 'matrix' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 04</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Design Audit & Compliance Checker</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-AUDIT-2026</span>
+            </div>
+
+            {/* Interactive Audit Tool Container */}
+            <div className="p-8 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-8">
+              <div>
+                <span className="text-[10px] font-mono text-[#8A7963] uppercase tracking-widest block mb-1">INTERACTIVE DESIGN SYSTEM AUDITOR</span>
+                <h3 className="text-2xl font-serif-display font-medium text-[#1A1A1A]">Evaluate a Future Design Proposal Against The Brief</h3>
+                <p className="text-xs text-[#5A5245] mt-1">Select any elements present in the proposed design to check if it complies or must be rejected:</p>
+              </div>
+
+              {/* Violation Checkboxes */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                {[
+                  { id: 'neon', label: 'Uses Neon/Glowing Colors', fatal: true },
+                  { id: 'dark_dash', label: 'Dark Mode SaaS Dashboard', fatal: true },
+                  { id: 'nested_cards', label: 'Nested Cards inside Cards', fatal: true },
+                  { id: 'bouncy_anim', label: 'Fast Bouncy Spring Animations', fatal: true },
+                  { id: 'crowded_space', label: 'Whitespace < 50%', fatal: true },
+                  { id: 'small_headers', label: 'Timid Sans-Serif Headers', fatal: true },
+                  { id: 'alabaster_bg', label: 'Uses Warm Alabaster Canvas (#FAF8F5)', fatal: false },
+                  { id: 'serif_display', label: 'Uses Cormorant Garamond Headlines', fatal: false },
+                  { id: 'mono_labels', label: 'Uses Monospace Metadata Tags', fatal: false }
+                ].map((item) => {
+                  const isChecked = selectedAuditViolations.includes(item.id);
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => toggleViolation(item.id)}
+                      className={`p-3 rounded border text-left flex items-start space-x-2.5 transition-all ${
+                        isChecked 
+                          ? (item.fatal ? 'bg-red-50 border-red-300 text-red-900' : 'bg-green-50 border-green-300 text-green-900')
+                          : 'bg-[#F2EDE4]/60 border-[#DCD6CA] text-[#1A1A1A] hover:bg-[#EBE7DF]'
+                      }`}
+                    >
+                      <input 
+                        type="checkbox" 
+                        checked={isChecked} 
+                        onChange={() => {}} 
+                        className="mt-0.5 rounded text-[#1A1A1A]"
+                      />
+                      <div className="text-[11px] font-medium leading-tight">
+                        <span>{item.label}</span>
+                        {item.fatal && <span className="block text-[9px] font-mono text-red-800 uppercase mt-0.5">Fatal Violation Risk</span>}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Audit Result Display Banner */}
+              <div className="pt-4 border-t border-[#EBE7DF]">
+                {selectedAuditViolations.some(id => ['neon', 'dark_dash', 'nested_cards', 'bouncy_anim', 'crowded_space', 'small_headers'].includes(id)) ? (
+                  <div className="p-6 bg-red-950 text-red-100 rounded-xl space-y-3 border border-red-800">
+                    <div className="flex items-center space-x-2 text-red-400 font-mono text-xs uppercase font-bold">
+                      <XCircle className="w-5 h-5 text-red-400" />
+                      <span>AUDIT RESULT: PROPOSAL REJECTED</span>
+                    </div>
+                    <p className="text-sm font-serif-display leading-relaxed">
+                      "This design proposal violates the official Valtreon Media Network Design Language. It incorporates prohibited tropes that compromise brand prestige."
+                    </p>
+                    <div className="p-3 bg-red-900/60 rounded text-xs font-mono text-red-200">
+                      <strong>REMEDIATION MANDATE:</strong> Remove all dashboard drawers, replace glowing gradients with Warm Alabaster (#FAF8F5), restore Cormorant Garamond display headlines, and expand padding buffers to at least 128px.
+                    </div>
+                  </div>
+                ) : selectedAuditViolations.length > 0 ? (
+                  <div className="p-6 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-3 border border-[#8A7963]">
+                    <div className="flex items-center space-x-2 text-[#A38B68] font-mono text-xs uppercase font-bold">
+                      <CheckCircle2 className="w-5 h-5 text-[#A38B68]" />
+                      <span>AUDIT RESULT: DESIGN COMPLIANT & APPROVED</span>
+                    </div>
+                    <p className="text-sm font-serif-display leading-relaxed">
+                      "This design proposal successfully fulfills the Valtreon Media Network visual standards. It preserves luxury editorial principles, generous negative space, and institutional trust."
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-4 bg-[#F2EDE4] rounded text-center text-xs font-mono text-[#6A6356]">
+                    Select checklist options above to run an interactive design audit evaluation.
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 5: LAYOUT, TYPOGRAPHY, COLOR & MOTION GUARDRAILS */}
+        {(activeTab === 'visuals' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 05</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Design Guardrails & Token Standards</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-TOKENS-2026</span>
+            </div>
+
+            {/* Layout Guardrails */}
+            <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+              <h3 className="text-2xl font-serif-display text-[#1A1A1A] font-semibold border-b border-[#EBE7DF] pb-3">
+                01. Layout & Grid Math Philosophy
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-[#4A453E]">
+                <div className="space-y-2 p-4 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <strong className="text-[#1A1A1A] block uppercase font-mono text-[10px]">Canvas Container Max Width</strong>
+                  <p className="font-mono text-sm text-[#1A1A1A]">max-w-7xl (1280px)</p>
+                  <p className="text-[11px] text-[#5A5245]">Constrains main content from stretching on ultra-wide desktop displays.</p>
+                </div>
+                <div className="space-y-2 p-4 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <strong className="text-[#1A1A1A] block uppercase font-mono text-[10px]">Section Padding Buffers</strong>
+                  <p className="font-mono text-sm text-[#1A1A1A]">128px – 192px Desktop</p>
+                  <p className="text-[11px] text-[#5A5245]">Ensures every fold breathes and acts as an isolated gallery exhibit.</p>
+                </div>
+                <div className="space-y-2 p-4 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <strong className="text-[#1A1A1A] block uppercase font-mono text-[10px]">Negative Space Canvas Ratio</strong>
+                  <p className="font-mono text-sm text-[#1A1A1A]">65%+ Open Area</p>
+                  <p className="text-[11px] text-[#5A5245]">Whitespace is treated as an active luxury design material.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Typography Scale Guardrails */}
+            <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+              <h3 className="text-2xl font-serif-display text-[#1A1A1A] font-semibold border-b border-[#EBE7DF] pb-3">
+                02. Typography Scale (1.333 Perfect Fourth)
+              </h3>
+              <div className="space-y-3 font-mono text-xs">
+                <div className="p-3 bg-[#FAF8F5] border border-[#DCD6CA] rounded flex justify-between items-center">
+                  <span>Display Hero (Cormorant Garamond)</span>
+                  <span className="font-bold text-[#1A1A1A]">64px – 88px / Light 300</span>
+                </div>
+                <div className="p-3 bg-[#FAF8F5] border border-[#DCD6CA] rounded flex justify-between items-center">
+                  <span>Section Headline H2 (Cormorant Garamond)</span>
+                  <span className="font-bold text-[#1A1A1A]">40px – 52px / Medium 500</span>
+                </div>
+                <div className="p-3 bg-[#FAF8F5] border border-[#DCD6CA] rounded flex justify-between items-center">
+                  <span>Card Title H3 (Cormorant Garamond)</span>
+                  <span className="font-bold text-[#1A1A1A]">24px – 32px / SemiBold 600</span>
+                </div>
+                <div className="p-3 bg-[#FAF8F5] border border-[#DCD6CA] rounded flex justify-between items-center">
+                  <span>Body Copy (Plus Jakarta Sans)</span>
+                  <span className="font-bold text-[#1A1A1A]">16px – 18px / Regular 400 (Line Height 1.6)</span>
+                </div>
+                <div className="p-3 bg-[#FAF8F5] border border-[#DCD6CA] rounded flex justify-between items-center">
+                  <span>Metadata Tags & Monospace Fine Print</span>
+                  <span className="font-bold text-[#8A7963]">10px – 11px / Tracked 0.12em Uppercase</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Color Guardrails */}
+            <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+              <h3 className="text-2xl font-serif-display text-[#1A1A1A] font-semibold border-b border-[#EBE7DF] pb-3">
+                03. Color Strategy (90% Neutral / 10% Accent)
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+                <div className="p-4 bg-[#FAF8F5] border border-[#DCD6CA] rounded text-center space-y-2">
+                  <span className="w-8 h-8 rounded-full bg-[#FAF8F5] border border-[#DCD6CA] inline-block" />
+                  <span className="block font-bold">#FAF8F5</span>
+                  <span className="text-[10px] text-[#6A6356] block">Warm Alabaster Canvas</span>
+                </div>
+                <div className="p-4 bg-[#FAF8F5] border border-[#DCD6CA] rounded text-center space-y-2">
+                  <span className="w-8 h-8 rounded-full bg-[#141414] inline-block" />
+                  <span className="block font-bold">#141414</span>
+                  <span className="text-[10px] text-[#6A6356] block">Onyx Charcoal Body</span>
+                </div>
+                <div className="p-4 bg-[#FAF8F5] border border-[#DCD6CA] rounded text-center space-y-2">
+                  <span className="w-8 h-8 rounded-full bg-[#8A7963] inline-block" />
+                  <span className="block font-bold text-[#8A7963]">#8A7963</span>
+                  <span className="text-[10px] text-[#6A6356] block">Antique Bronze Accent</span>
+                </div>
+                <div className="p-4 bg-[#FAF8F5] border border-[#DCD6CA] rounded text-center space-y-2">
+                  <span className="w-8 h-8 rounded-full bg-[#DCD6CA] inline-block" />
+                  <span className="block font-bold">#DCD6CA</span>
+                  <span className="text-[10px] text-[#6A6356] block">Soft Taupe Borders</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Motion Guardrails */}
+            <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+              <h3 className="text-2xl font-serif-display text-[#1A1A1A] font-semibold border-b border-[#EBE7DF] pb-3">
+                04. Unified Motion Language
+              </h3>
+              <div className="p-4 bg-[#141414] text-[#FAF8F5] rounded-lg font-mono text-xs space-y-2">
+                <p className="text-[#A38B68]">BEZIER CURVE DAMPED PHYSICS:</p>
+                <p className="text-[#DDD]">transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);</p>
+                <p className="text-[#AAA] text-[11px] pt-1 border-t border-[#333]">
+                  All hover elevations max at 2px. Opacity fades occur gently over 600ms. Zero spring physics, zero bouncing, zero spin loaders.
+                </p>
+              </div>
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 6: SECTION MOODBOARD PHILOSOPHY */}
+        {(activeTab === 'architecture' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 06</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Section Moodboard & Architecture</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-MOODBOARD-2026</span>
+            </div>
+
+            <div className="space-y-8">
+              {[
+                { title: 'Hero Fold', concept: 'Monumental Display Anchor & Quiet Confidence', desc: 'Full-width Alabaster canvas featuring an 88px Cormorant Garamond headline. Subtle 10px tracked metadata tags. Single primary action trigger.' },
+                { title: 'Services Module', concept: 'Asymmetrical Editorial Magazine Columns', desc: 'Staggered 7:5 golden ratio column splits separating enterprise strategy from creator matching. Hairline dividers.' },
+                { title: 'Campaigns Gallery', concept: 'High-Fashion Framed Exhibition Exhibits', desc: 'Full-bleed 16:9 media containers with muted warm color grading, 1px taupe borders, and static performance metrics.' },
+                { title: 'Creator Roster', concept: 'Curated Portrait Gallery Framing', desc: '4:3 high-fashion portrait framing displaying creator audience scale ($1M+ REACH) in understated serif counters.' },
+                { title: 'Testimonials Section', concept: 'Executive Pull-Quotes & Institutional Stamps', desc: 'Large 32px italicized serif quote copy paired with verified Fortune 500 client trust seals.' },
+                { title: 'Footer Module', concept: 'Architectural Monospace Fine Print', desc: 'Quiet, structured legal specifications, dual contact intake portals, and institutional copyright notices.' }
+              ].map((m, idx) => (
+                <div key={idx} className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-3">
+                  <div className="flex justify-between items-center border-b border-[#EBE7DF] pb-2">
+                    <h3 className="text-xl font-serif-display text-[#1A1A1A] font-semibold">{m.title}</h3>
+                    <span className="text-[10px] font-mono px-2 py-0.5 bg-[#F2EDE4] text-[#8A7963] uppercase">{m.concept}</span>
+                  </div>
+                  <p className="text-xs text-[#5A5245] leading-relaxed">{m.desc}</p>
+                </div>
+              ))}
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 7: DUAL LEAD SCHEMA */}
+        {(activeTab === 'enquiry' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 07</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Dual Lead Intake Schema & Conversion Protocol</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-CONVERSION-2026</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              
+              {/* Funnel A: Enterprise Brands */}
+              <div className="p-8 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-6">
+                <div className="border-b border-[#333] pb-4">
+                  <span className="text-[10px] font-mono text-[#A38B68] uppercase tracking-widest block mb-1">FUNNEL A</span>
+                  <h3 className="text-2xl font-serif-display font-light">Enterprise Brand Portal</h3>
+                  <p className="text-xs text-[#AAA] mt-1">Designed exclusively for Chief Marketing Officers & Brand Directors.</p>
+                </div>
+
+                <div className="space-y-4 text-xs font-mono text-[#DDD]">
+                  <div className="p-3 bg-[#1F1F1F] rounded border border-[#333]">
+                    <span className="text-[#A38B68] block font-bold mb-1">QUALIFICATION PARAMETERS:</span>
+                    • Campaign Budget: $100K–$5M+ Range<br/>
+                    • Media Scope: Multi-platform Creator Syndication<br/>
+                    • Governance: Enterprise IP Rights & SLA Guarantees
+                  </div>
+
+                  <button className="w-full py-3 bg-[#FAF8F5] text-[#141414] font-sans-body font-medium rounded text-xs hover:bg-[#EBE7DF] transition-colors">
+                    Commission Enterprise Campaign →
+                  </button>
+                </div>
+              </div>
+
+              {/* Funnel B: Creator Roster */}
+              <div className="p-8 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+                <div className="border-b border-[#EBE7DF] pb-4">
+                  <span className="text-[10px] font-mono text-[#8A7963] uppercase tracking-widest block mb-1">FUNNEL B</span>
+                  <h3 className="text-2xl font-serif-display text-[#1A1A1A] font-semibold">Creator Roster Portal</h3>
+                  <p className="text-xs text-[#5A5245] mt-1">Designed exclusively for Tier-1 Digital Content Creators.</p>
+                </div>
+
+                <div className="space-y-4 text-xs font-mono text-[#3D3830]">
+                  <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                    <span className="text-[#8A7963] block font-bold mb-1">QUALIFICATION PARAMETERS:</span>
+                    • Reach: &gt; 250,000 Verified Followers<br/>
+                    • Engagement Rate: &gt; 3.8% Benchmark<br/>
+                    • Portfolio: Premium Editorial Content Quality
+                  </div>
+
+                  <button className="w-full py-3 bg-[#141414] text-[#FAF8F5] font-sans-body font-medium rounded text-xs hover:bg-[#2A2A2A] transition-colors">
+                    Apply for Roster Representation →
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 8: HOMEPAGE BLUEPRINT ARCHITECTURE */}
+        {(activeTab === 'blueprint' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 08</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Homepage Blueprint Specification</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-HOMEPAGE-BLUEPRINT-2026</span>
+            </div>
+
+            {/* Strategic Overview & Psychology */}
+            <div className="p-8 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-6">
+              <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-4">
+                <div className="flex items-center space-x-2 text-[#A38B68]">
+                  <Compass className="w-4 h-4" />
+                  <span className="text-xs font-mono uppercase tracking-widest">CREATIVE DIRECTOR STRATEGY ARCHITECTURE</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 bg-[#A38B68]/20 text-[#A38B68] rounded">LUXURY EDITORIAL</span>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-[#DDD]">
+                <div className="space-y-2">
+                  <span className="text-[#A38B68] font-mono uppercase tracking-wider block text-[10px]">1. Homepage Storytelling</span>
+                  <p className="leading-relaxed">
+                    The homepage unfolds like an architectural exhibition catalog. It transitions the visitor from awe (monumental typography) to trust (institutional spend proof) to capability (editorial campaign showcases) to effortless conversion.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <span className="text-[#A38B68] font-mono uppercase tracking-wider block text-[10px]">2. Scroll Journey & Psychology</span>
+                  <p className="leading-relaxed">
+                    Unhurried, gallery-like scroll inertia. Each fold acts as a self-contained exhibit. CMOs feel immediate capital reassurance; creators feel prestige and exclusivity.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <span className="text-[#A38B68] font-mono uppercase tracking-wider block text-[10px]">3. Conversion Strategy</span>
+                  <p className="leading-relaxed">
+                    Dual lead isolation: Enterprise Brands proceed to budget & scope inquiry, while Creators access roster representation vetting. No cross-contamination.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Section Sequence Flow */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-serif-display font-semibold text-[#1A1A1A]">Section Order & Journey Mapping</h3>
+              <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+                {[
+                  '01. Hero', '02. Trusted By', '03. About Valtreon', '04. Services',
+                  '05. Featured Campaigns', '06. Creator Network', '07. Process',
+                  '08. Testimonials', '09. FAQ', '10. CTA', '11. Footer'
+                ].map((s, idx) => (
+                  <React.Fragment key={s}>
+                    <span className="px-3 py-1.5 bg-[#F2EDE4] border border-[#DCD6CA] text-[#1A1A1A] rounded font-medium">
+                      {s}
+                    </span>
+                    {idx < 10 && <ChevronRight className="w-3.5 h-3.5 text-[#8A7963]" />}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+            {/* 11 Section Breakdown Cards */}
+            <div className="space-y-12">
+              {[
+                {
+                  num: '01',
+                  name: 'Hero Section',
+                  purpose: 'Establish immediate editorial dominance and introduce Valtreon as the premier influencer marketing authority for global enterprise brands and elite creators.',
+                  content: 'Eyebrow tag: "VALTREON MEDIA NETWORK • EST. 2026". H1 Headline: "Empowering Enterprise Brands & Elite Content Creators". Subheadline: "We engineer high-impact influencer campaigns backed by $50M+ in verified media spend and algorithmic creator matching." CTAs: "Commission a Campaign →" (Primary) & "Explore Creator Roster" (Secondary).',
+                  layout: 'Asymmetrical 12-column golden ratio split (7 cols copy / 5 cols hero framed image exhibit). Hairline divider base.',
+                  typography: 'Cormorant Garamond Light 72px headline, Plus Jakarta Sans 18px lead copy, uppercase Monospace 10px metadata tag.',
+                  whitespace: 'Generous 160px top padding buffer, 65%+ canvas breathing ratio, zero clutter.',
+                  animation: 'Damped inertia fade-in (0.6s opacity, 4px vertical rise) on page load.',
+                  emotion: 'Awe, prestige, unshakeable confidence, and high-capital reassurance.',
+                  goal: 'Drive high-intent enterprise CMOs directly into campaign briefing or roster exploration.'
+                },
+                {
+                  num: '02',
+                  name: 'Trusted By (Social Proof)',
+                  purpose: 'Provide immediate institutional validation through marquee enterprise client logos and total capital figures.',
+                  content: 'Header: "INSTITUTIONAL PARTNERS & BRAND PORTFOLIO". Monochrome luxury brand marks (LVMH, Nike, Sephora, Samsung, Dyson, Equinox) + Verified metrics badge: "$50M+ Media Spend Managed".',
+                  layout: 'Horizontal 6-column aligned marquee row with hairline borders top and bottom.',
+                  typography: 'Monospace 10px tracked 0.12em section header; crisp logo marks in muted charcoal tone.',
+                  whitespace: '64px top/bottom vertical padding cushion; equal 48px horizontal spacing between logos.',
+                  animation: 'Subtle continuous horizontal crawl (0.2px/frame) with smooth pause on hover.',
+                  emotion: 'Unquestioned authority, peer-level executive trust.',
+                  goal: 'Eliminate credibility hesitation early in the scroll journey.'
+                },
+                {
+                  num: '03',
+                  name: 'About Valtreon',
+                  purpose: 'Communicate Valtreon’s core thesis and why traditional influencer agencies fail in high-stakes campaign execution.',
+                  content: 'Editorial narrative block: "The Anti-Agency Thesis". Paragraphs detailing algorithmic match precision, 100% brand safety guarantees, and direct-to-creator communication pipes. Key stats: "4.2x Average ROAS", "99.8% Campaign Safety Rating", "1,200+ Vetted Creators".',
+                  layout: 'Asymmetric 2-column layout. Column 1: Sticky manifesto heading. Column 2: 3 structured narrative blocks + metric callouts.',
+                  typography: 'Cormorant Garamond 44px section title; Plus Jakarta Sans 16px narrative text with 1.6 line height.',
+                  whitespace: '128px top and bottom section buffers; 40px gap between column tracks.',
+                  animation: 'Staggered opacity fade as user scrolls into the viewport fold.',
+                  emotion: 'Intellectual alignment, professional clarity, relief from generic agency hype.',
+                  goal: 'Qualify enterprise buyers and establish Valtreon’s unique market positioning.'
+                },
+                {
+                  num: '04',
+                  name: 'Services & Capabilities',
+                  purpose: 'Detail Valtreon’s 4 core service pillars with transparent operational scope and zero fluff.',
+                  content: 'Pillars: 1. Full-Funnel Campaign Strategy, 2. Algorithmic Creator Match, 3. Production & Rights Management, 4. Real-Time Attribution Analytics.',
+                  layout: '2x2 grid of flat, un-nested cards with 1px taupe borders (#DCD6CA) and subtle hover elevation.',
+                  typography: 'H3: Cormorant Garamond 28px; Card body: Plus Jakarta Sans 14px; Tags: Monospace 10px uppercase.',
+                  whitespace: '32px internal card padding; 32px grid gaps; 128px outer section cushion.',
+                  animation: 'Subtle 2px vertical lift on card hover with border transition to Antique Bronze (#8A7963).',
+                  emotion: 'Operational clarity, structural capability, white-glove confidence.',
+                  goal: 'Convert general interest into specific service scope inquiry.'
+                },
+                {
+                  num: '05',
+                  name: 'Featured Campaigns (Case Studies)',
+                  purpose: 'Showcase real-world enterprise campaign executions through high-fashion visual gallery containers.',
+                  content: '3 Featured Exhibitions: Campaign 1 (Global Luxury Skincare Launch - $3.2M Revenue), Campaign 2 (Next-Gen Tech Wearable - 14.2M Reach), Campaign 3 (Sustainable Apparel - 5.1x ROAS). Each includes hero editorial image, key stats, and "Read Case Study" link.',
+                  layout: 'Vertical staggered magazine layout with alternating 7:5 image/text proportions.',
+                  typography: 'Cormorant Garamond 36px campaign title; Monospace 11px stat counters (#8A7963).',
+                  whitespace: '96px vertical gap between campaign exhibits; generous image padding.',
+                  animation: 'Image subtle zoom (1.000 to 1.020) on cursor hover inside framed image container.',
+                  emotion: 'Visual inspiration, tangible ROI proof, high-fashion envy.',
+                  goal: 'Demonstrate proven campaign success for enterprise decision-makers.'
+                },
+                {
+                  num: '06',
+                  name: 'Creator Network Showcase',
+                  purpose: 'Highlight the caliber of exclusive talent represented on Valtreon’s roster.',
+                  content: 'Creator cards showcasing Tier-1 Talent across Luxury Fashion, Tech, Wellness, and Automotive. Metrics: Followers, Engagement Rate, Niche, Past Brand Collaborations.',
+                  layout: '4-column editorial roster gallery with framed photography and fine metadata tags.',
+                  typography: 'Creator Name: Cormorant Garamond 22px; Stats: Monospace 10px uppercase.',
+                  whitespace: '24px grid gap; 48px section header cushion; 128px section buffer.',
+                  animation: 'Smooth overlay fade showing creator campaign portfolio preview on card focus.',
+                  emotion: 'Prestige, talent desire, exclusivity.',
+                  goal: 'Attract elite creators for representation while impressing brand advertisers.'
+                },
+                {
+                  num: '07',
+                  name: 'Process & Methodology',
+                  purpose: 'Demystify the 4-step campaign lifecycle from brief to final ROI audit.',
+                  content: 'Phase 01: Strategic Discovery & Persona Brief → Phase 02: Algorithmic Roster Vetting → Phase 03: Production & Brand Safety Audit → Phase 04: Attribution & ROI Settlement.',
+                  layout: 'Horizontal 4-column timeline with connecting hairline dividers (#EBE7DF) and phase badges.',
+                  typography: 'Phase Number: Monospace 12px (#8A7963); Phase Name: Cormorant Garamond 24px; Description: Sans 13px.',
+                  whitespace: '32px internal step padding; 128px section top/bottom padding.',
+                  animation: 'Progressive hairline highlight line animating across steps during scroll.',
+                  emotion: 'Predictability, risk elimination, structured perfection.',
+                  goal: 'Reassure risk-averse corporate buyers about campaign execution.'
+                },
+                {
+                  num: '08',
+                  name: 'Testimonials & Executive Endorsements',
+                  purpose: 'Provide high-level peer validation from Global CMOs and Tier-1 Creator Partners.',
+                  content: 'Quotes from VP of Marketing at Fortune 500 Beauty Brand and 2M+ Creator Partner. Includes verified name, title, company mark, and campaign spend context.',
+                  layout: 'Dual-column side-by-side editorial quote containers with large serif quotation marks.',
+                  typography: 'Quote Copy: Cormorant Garamond Italic 24px; Author Details: Plus Jakarta Sans 12px uppercase.',
+                  whitespace: '48px container padding; 128px vertical section buffer.',
+                  animation: 'Gentle opacity cross-fade when cycling testimonial slides.',
+                  emotion: 'Peer reassurance, executive social proof, unshakeable trust.',
+                  goal: 'Close remaining doubts for enterprise leads before CTA.'
+                },
+                {
+                  num: '09',
+                  name: 'Frequently Asked Questions (FAQ)',
+                  purpose: 'Address technical, legal, financial, and roster questions for both Brands and Creators.',
+                  content: 'Categorized accordions: Enterprise Brand FAQs (Budget minimums, IP licensing, Brand safety) & Creator FAQs (Roster qualification, payout terms, exclusivity).',
+                  layout: 'Single column max-w-3xl with clean hairline dividers (#EBE7DF) and subtle open/close indicators.',
+                  typography: 'Question: Plus Jakarta Sans 16px Medium; Answer: Plus Jakarta Sans 14px Regular (1.6 line height).',
+                  whitespace: '24px vertical padding per item; 128px section padding.',
+                  animation: 'Smooth height expansion (0.3s ease-out) with zero visual jump.',
+                  emotion: 'Complete transparency, friction removal, clarity.',
+                  goal: 'Remove final objections prior to contact form submission.'
+                },
+                {
+                  num: '10',
+                  name: 'Primary Call To Action (CTA)',
+                  purpose: 'Serve as the ultimate conversion gateway for both target audiences.',
+                  content: 'Dual Conversion Portal: Portal A for Enterprise Brands ("Commission a Campaign") & Portal B for Content Creators ("Apply for Roster Representation"). Includes institutional safety seals.',
+                  layout: 'Side-by-side 2-column conversion cards in Deep Charcoal (#141414) and Warm Alabaster (#FAF8F5).',
+                  typography: 'Heading: Cormorant Garamond 36px; Body: Plus Jakarta Sans 14px; CTA Button: 12px uppercase bold.',
+                  whitespace: '64px internal card padding; 160px section padding buffer.',
+                  animation: 'Subtle border highlight pulse on button focus.',
+                  emotion: 'Decisive action, ambition, mutual prestige.',
+                  goal: 'Maximize lead conversion for both enterprise clients and talent.'
+                },
+                {
+                  num: '11',
+                  name: 'Footer',
+                  purpose: 'Anchor the bottom of the canvas with legal, navigational, and institutional credentials.',
+                  content: 'Valtroen logo mark, location offices (New York, London, Paris, Tokyo), legal terms, privacy policy, security compliance, social links, and live system status tag.',
+                  layout: '4-column footer layout anchored by top hairline border (#EBE7DF).',
+                  typography: 'Headers: Monospace 10px uppercase (#8A7963); Links: Plus Jakarta Sans 12px; Copyright: Monospace 10px.',
+                  whitespace: '64px top/bottom padding; 32px column gaps.',
+                  animation: 'Clean hover color shift on text links from #5A5245 to #1A1A1A.',
+                  emotion: 'Institutional completeness and permanence.',
+                  goal: 'Provide seamless navigation and meet legal/compliance requirements.'
+                }
+              ].map((sec) => (
+                <div key={sec.num} className="p-6 sm:p-8 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#EBE7DF] pb-4 gap-2">
+                    <div className="flex items-center space-x-3">
+                      <span className="w-9 h-9 rounded bg-[#141414] text-[#FAF8F5] flex items-center justify-center font-mono text-sm font-bold">
+                        {sec.num}
+                      </span>
+                      <h3 className="text-2xl font-serif-display font-semibold text-[#1A1A1A]">
+                        {sec.name}
+                      </h3>
+                    </div>
+                    <span className="text-[10px] font-mono px-2.5 py-1 bg-[#F2EDE4] text-[#8A7963] border border-[#DCD6CA] rounded">
+                      SECTION SPECIFICATION
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-[#3D3830]">
+                    <div className="space-y-3">
+                      <div>
+                        <span className="font-bold text-[#1A1A1A] block uppercase text-[10px] tracking-wider mb-1">Purpose:</span>
+                        <p className="leading-relaxed">{sec.purpose}</p>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#1A1A1A] block uppercase text-[10px] tracking-wider mb-1">Content & Copy:</span>
+                        <p className="leading-relaxed">{sec.content}</p>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#1A1A1A] block uppercase text-[10px] tracking-wider mb-1">Layout Architecture:</span>
+                        <p className="leading-relaxed">{sec.layout}</p>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#1A1A1A] block uppercase text-[10px] tracking-wider mb-1">Typography System:</span>
+                        <p className="leading-relaxed font-mono text-[11px] text-[#8A7963]">{sec.typography}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 p-4 bg-[#F2EDE4]/60 rounded-lg border border-[#DCD6CA]">
+                      <div>
+                        <span className="font-bold text-[#8A7963] block uppercase text-[10px] tracking-wider mb-1 font-mono">Whitespace & Padding:</span>
+                        <p className="leading-relaxed">{sec.whitespace}</p>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#8A7963] block uppercase text-[10px] tracking-wider mb-1 font-mono">Motion & Animation:</span>
+                        <p className="leading-relaxed">{sec.animation}</p>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#8A7963] block uppercase text-[10px] tracking-wider mb-1 font-mono">User Emotion Evoked:</span>
+                        <p className="leading-relaxed font-serif-display italic text-sm text-[#1A1A1A]">{sec.emotion}</p>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#8A7963] block uppercase text-[10px] tracking-wider mb-1 font-mono">Conversion Goal:</span>
+                        <p className="leading-relaxed font-medium text-[#1A1A1A]">{sec.goal}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile Behavior & Responsiveness Specification */}
+            <div className="p-8 bg-[#FAF8F5] border-2 border-[#8A7963] rounded-xl space-y-4">
+              <div className="flex items-center space-x-2 text-[#8A7963] border-b border-[#EBE7DF] pb-3">
+                <Globe className="w-4 h-4" />
+                <h3 className="text-xl font-serif-display font-semibold text-[#1A1A1A]">Mobile Responsiveness & Touch Ergonomics</h3>
+              </div>
+              <ul className="text-xs text-[#4A453E] space-y-2 leading-relaxed">
+                <li>• <strong>Typography Scaling:</strong> Headlines downscale gracefully from 72px desktop to 36px–42px mobile using fluid CSS clamp(36px, 8vw, 72px).</li>
+                <li>• <strong>Touch Targets:</strong> All buttons, accordion headers, and tab selectors strictly maintain a minimum 48px vertical touch target.</li>
+                <li>• <strong>Grid Collapsing:</strong> Asymmetric 12-column desktop grids stack cleanly into single-column editorial exhibits with 24px horizontal margins.</li>
+                <li>• <strong>No Unnecessary Drawers:</strong> Navigation simplifies into a minimal sticky header with a quiet fullscreen overlay navigation on tap.</li>
+              </ul>
             </div>
 
           </section>
@@ -1009,7 +1525,7 @@ STRICTLY BANNED AESTHETICS:
             <Crown className="w-4 h-4 text-[#8A7963]" />
             <span className="font-serif-display font-medium text-[#1A1A1A]">Valtreon Media Network</span>
           </div>
-          <p>© 2026 Valtreon Media Network. All Rights Reserved. Confidential Brand Personality & Design System Specification.</p>
+          <p>© 2026 Valtreon Media Network. All Rights Reserved. Official Design Language & Visual Source of Truth Document.</p>
         </div>
       </footer>
     </div>
