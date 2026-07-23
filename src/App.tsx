@@ -56,7 +56,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'principles' | 'personality' | 'direction' | 'document' | 'matrix' | 'visuals' | 'architecture' | 'enquiry' | 'blueprint'>('blueprint');
+  const [activeTab, setActiveTab] = useState<'principles' | 'personality' | 'direction' | 'document' | 'matrix' | 'visuals' | 'architecture' | 'enquiry' | 'blueprint' | 'figma'>('figma');
   const [viewMode, setViewMode] = useState<'editorial' | 'presentation'>('editorial');
   const [activePrincipleCategory, setActivePrincipleCategory] = useState<string>('all');
   const [copiedNotification, setCopiedNotification] = useState<boolean>(false);
@@ -411,7 +411,13 @@ STRICTLY BANNED AESTHETICS (IMMEDIATE REJECTION CRITERIA):
             onClick={() => setActiveTab('blueprint')}
             className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'blueprint' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
           >
-            ★ 08. Homepage Blueprint Architecture
+            08. Homepage Blueprint Architecture
+          </button>
+          <button
+            onClick={() => setActiveTab('figma')}
+            className={`py-2 px-3 border-b-2 transition-colors ${activeTab === 'figma' ? 'border-[#1A1A1A] text-[#1A1A1A] font-bold' : 'border-transparent text-[#6A6356] hover:text-[#1A1A1A]'}`}
+          >
+            ★ 09. Figma UI Specification
           </button>
         </div>
       </nav>
@@ -1511,6 +1517,323 @@ STRICTLY BANNED AESTHETICS (IMMEDIATE REJECTION CRITERIA):
                 <li>• <strong>Grid Collapsing:</strong> Asymmetric 12-column desktop grids stack cleanly into single-column editorial exhibits with 24px horizontal margins.</li>
                 <li>• <strong>No Unnecessary Drawers:</strong> Navigation simplifies into a minimal sticky header with a quiet fullscreen overlay navigation on tap.</li>
               </ul>
+            </div>
+
+          </section>
+        )}
+
+        {/* TAB 9: FIGMA UI & COMPONENT SPECIFICATION */}
+        {(activeTab === 'figma' || viewMode === 'presentation') && (
+          <section className="mb-20 space-y-16">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#DCD6CA] pb-4 gap-2">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#8A7963]">SPECIFICATION 09</span>
+                <h2 className="text-3xl sm:text-4xl font-serif-display text-[#1A1A1A]">Figma UI & Section Component Specs</h2>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-1 bg-[#1A1A1A] text-[#FAF8F5] rounded">DOC ID: VM-FIGMA-SPECS-2026</span>
+            </div>
+
+            <div className="p-8 bg-[#141414] text-[#FAF8F5] rounded-xl space-y-4">
+              <div className="flex items-center space-x-2 text-[#A38B68]">
+                <LayoutGrid className="w-4 h-4" />
+                <span className="text-xs font-mono uppercase tracking-widest">FIGMA SYSTEM ARCHITECTURE</span>
+              </div>
+              <blockquote className="font-serif-display text-xl sm:text-2xl font-light italic leading-relaxed text-[#FAF8F5]">
+                "Complete Figma design file token matrix. Every section defines exact layout, grid, spacing, typography, imagery, card styles, buttons, icons, backgrounds, radiuses, shadows, motion, and hover parameters."
+              </blockquote>
+            </div>
+
+            {/* Design Tokens Global Matrix */}
+            <div className="p-6 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-4">
+              <h3 className="text-lg font-serif-display font-semibold text-[#1A1A1A]">Global Master Figma Tokens</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+                <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <span className="text-[#8A7963] block text-[10px]">COLOR CANVASES</span>
+                  • Alabaster (#FAF8F5)<br/>
+                  • Charcoal (#141414)<br/>
+                  • Sand (#F5F1E8)
+                </div>
+                <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <span className="text-[#8A7963] block text-[10px]">TYPOGRAPHY STACK</span>
+                  • Display: Cormorant Garamond<br/>
+                  • Sans: Plus Jakarta Sans<br/>
+                  • Tag: IBM Plex Mono
+                </div>
+                <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <span className="text-[#8A7963] block text-[10px]">GRID & BREAKPOINTS</span>
+                  • Max-Width: 1280px (7xl)<br/>
+                  • Columns: 12 (Gutter 32px)<br/>
+                  • Margin: 64px Desktop
+                </div>
+                <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA]">
+                  <span className="text-[#8A7963] block text-[10px]">ELEVATION & BORDERS</span>
+                  • Border: 1px #DCD6CA<br/>
+                  • Radius: 8px / 12px<br/>
+                  • Shadow: 0px (Flat Luxury)
+                </div>
+              </div>
+            </div>
+
+            {/* 11 Detailed Figma Section Spec Breakdown */}
+            <div className="space-y-12">
+              {[
+                {
+                  id: 'sec-hero',
+                  name: '01. Hero Section',
+                  layout: 'Asymmetric Split Hero Layout (7 Columns Left Copy / 5 Columns Right Framed Image Exhibit). Sticky Navigation Anchor above.',
+                  grid: '12-Column Grid (Gutter: 32px, Margin: 64px Desktop, 24px Mobile).',
+                  containerWidth: '1280px (Max Width 7XL Container, Centered).',
+                  spacing: 'Padding Top: 160px, Padding Bottom: 128px, Element Gap: 32px, Text Stack Gap: 24px.',
+                  typography: 'Eyebrow: 10px Mono Uppercase (Tracked 0.12em, #8A7963) • H1: 72px Cormorant Garamond Light (Leading 1.08, #141414) • Lead: 18px Plus Jakarta Sans Regular (Leading 1.6, #3D3830).',
+                  images: 'Hero Framed Exhibit: 16:9 Aspect Ratio with Muted Warm Tone Grading, 1px Taupe Border (#DCD6CA), 0px Shadow, Warm Alabaster Placeholder backdrop.',
+                  cardStyle: 'Flat Exhibition Frame (No elevation, 1px #DCD6CA solid border, 0px box shadow, 12px border radius).',
+                  buttonStyle: 'Primary: Solid Charcoal (#141414) Background, Warm White Text (#FAF8F5), 12px Mono Uppercase (Tracked 0.08em), 16px vertical / 32px horizontal padding, 6px radius. Secondary: Transparent with 1px Bronze (#8A7963) border.',
+                  icons: 'Lucide ArrowRight (14px) in Antique Bronze (#8A7963) inline with button text.',
+                  background: 'Warm Alabaster Canvas (#FAF8F5) with subtle 1px Hairline Bottom Divider (#EBE7DF).',
+                  borderRadius: 'Outer Container: 16px | Buttons: 6px | Framed Image: 12px.',
+                  shadows: '0px (Strictly No Drop Shadows / No Glows in compliance with Quiet Luxury principles).',
+                  motion: 'Figma Smart Animate / Ease-Out (600ms, cubic-bezier 0.16, 1, 0.3, 1). Staggered opacity rise (+4px Y shift).',
+                  hoverEffects: 'Primary Button: Background shifts from #141414 to #2A2A2A with +2px right icon shift. Framed Image: Subtle 1.010x scale expansion.'
+                },
+                {
+                  id: 'sec-trusted',
+                  name: '02. Trusted By (Social Proof)',
+                  layout: 'Horizontal Single-Row Marquee Strip anchored by Top and Bottom Hairline Dividers (#EBE7DF).',
+                  grid: '6-Column Equal Width Spacing Track (Gutter: 48px).',
+                  containerWidth: '1280px (Full Width Flex Container within 7XL bounds).',
+                  spacing: 'Padding Top: 64px, Padding Bottom: 64px, Logo Gap: 48px.',
+                  typography: 'Section Label: 10px Mono Uppercase (Tracked 0.14em, #8A7963) • Verified Spend Badge: 11px Mono (#141414).',
+                  images: 'Logos: Vector Monochromatic SVGs rendered in Charcoal (#3D3830) with 60% opacity baseline.',
+                  cardStyle: 'N/A (Seamless inline divider row).',
+                  buttonStyle: 'N/A.',
+                  icons: 'ShieldCheck (14px) in Antique Bronze (#8A7963) for spend badge.',
+                  background: 'Off-White Sand Canvas (#F5F1E8) flanked by 1px solid dividers (#EBE7DF).',
+                  borderRadius: '0px (Edge-to-edge section dividers).',
+                  shadows: '0px.',
+                  motion: 'Continuous linear scroll animation (0.2px/frame) with CSS hardware acceleration.',
+                  hoverEffects: 'Logo Mark Hover: Opacity shifts from 60% to 100% Charcoal with 200ms transition.'
+                },
+                {
+                  id: 'sec-about',
+                  name: '03. About Valtreon',
+                  layout: 'Asymmetric 2-Column Grid (4 Columns Left Sticky Headline / 8 Columns Right Editorial Copy & Key Metric Cards).',
+                  grid: '12-Column Grid (Gutter: 32px, Margin: 64px).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Row Gap: 40px, Metric Card Gap: 24px.',
+                  typography: 'Section Eyebrow: 10px Mono (#8A7963) • Main Title: 48px Cormorant Garamond Medium (#141414) • Body Copy: 16px Plus Jakarta Sans (Leading 1.65, #3D3830) • Stat Value: 40px Cormorant Garamond Bold (#141414).',
+                  images: 'Option for 1 Editorial Portrait (4:5 Aspect Ratio) with 1px Taupe Border and fine metadata overlay.',
+                  cardStyle: 'Stat Cards: Single-layer flat surface (#FAF8F5) with 1px #DCD6CA border, 24px inner padding, 8px radius.',
+                  buttonStyle: 'Text Link Button: 12px Mono Uppercase with 1px solid underline in Antique Bronze (#8A7963).',
+                  icons: 'Sparkles (16px) & Scale (16px) in #8A7963.',
+                  background: 'Warm Alabaster Canvas (#FAF8F5).',
+                  borderRadius: 'Stat Cards: 8px.',
+                  shadows: '0px.',
+                  motion: 'Scroll-triggered viewport reveal. Staggered 150ms delay between narrative blocks.',
+                  hoverEffects: 'Stat Card Hover: Border color shifts from #DCD6CA to #8A7963 with subtle 1px elevation.'
+                },
+                {
+                  id: 'sec-services',
+                  name: '04. Services & Capabilities',
+                  layout: '2x2 Grid Matrix of Flat Service Cards anchored by Top Section Header and Capability Index Tags.',
+                  grid: '12-Column Grid Split into 2 Equal 6-Column Tracks (Gutter: 32px).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Card Inner Padding: 40px, Grid Gap: 32px.',
+                  typography: 'Section Title: 44px Cormorant Garamond (#141414) • Service Title: 28px Cormorant Garamond SemiBold (#141414) • Service Body: 14px Plus Jakarta Sans (#5A5245) • Pillar Tag: 10px Mono (#8A7963).',
+                  images: 'N/A (Typography and subtle vector iconography driven).',
+                  cardStyle: 'Flat Luxury Card Container: Background #FAF8F5, Border 1px #DCD6CA, Corner Radius 12px, Inner Padding 40px.',
+                  buttonStyle: 'Secondary Outline Pill: 11px Mono Uppercase, 1px #8A7963 border, 12px vertical / 20px horizontal padding.',
+                  icons: 'Zap, Sliders, Shield, BarChart3 (20px) in #8A7963.',
+                  background: 'Warm Sand Background Canvas (#F5F1E8) providing contrast from adjacent alabaster folds.',
+                  borderRadius: 'Card Containers: 12px | Pill Badges: 4px.',
+                  shadows: '0px.',
+                  motion: 'Hover transition: border-color 300ms ease, transform -2px Y axis.',
+                  hoverEffects: 'Card Border turns Antique Bronze (#8A7963), background warms slightly to #FAF8F5.'
+                },
+                {
+                  id: 'sec-campaigns',
+                  name: '05. Featured Campaigns (Case Studies)',
+                  layout: 'Vertical Magazine Exhibition Layout with Staggered 7:5 Alternating Image/Data Splits.',
+                  grid: '12-Column Grid (7 Cols Image / 5 Cols Campaign Specs & Results).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Exhibition Item Gap: 96px, Spec Block Gap: 16px.',
+                  typography: 'Campaign Title: 36px Cormorant Garamond Light (#141414) • Revenue Stat: 32px Cormorant Garamond Medium (#8A7963) • Client Industry: 10px Mono Uppercase (#8A7963) • Description: 14px Plus Jakarta Sans (#3D3830).',
+                  images: 'Editorial Campaign Photography: 16:9 and 4:3 Ratios, High-Fashion Color Grading, 1px Taupe Border (#DCD6CA), Framed Exhibit Matting.',
+                  cardStyle: 'Framed Gallery Exhibit: Single-layer container with 1px #DCD6CA border and 32px internal padding.',
+                  buttonStyle: 'Primary Link CTA: "Explore Campaign Case Study →" set in 12px Mono Uppercase with Antique Bronze arrow.',
+                  icons: 'ArrowRight (14px), ExternalLink (14px) in Antique Bronze.',
+                  background: 'Warm Alabaster (#FAF8F5).',
+                  borderRadius: 'Media Frames: 12px | Spec Cards: 8px.',
+                  shadows: '0px.',
+                  motion: 'Image subtle zoom (scale 1.000 to 1.015) on hover inside fixed frame clip mask.',
+                  hoverEffects: 'Framed Media Container: Scale zoom + Border color darkens to Charcoal (#141414).'
+                },
+                {
+                  id: 'sec-creators',
+                  name: '06. Creator Network Showcase',
+                  layout: '4-Column Editorial Talent Roster Grid with Framed Creator Cards and Fine Metrics.',
+                  grid: '12-Column Grid Split into 4 Equal 3-Column Cards (Gutter: 24px).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Grid Gap: 24px, Card Inner Padding: 20px.',
+                  typography: 'Creator Name: 22px Cormorant Garamond SemiBold (#141414) • Niche Tag: 10px Mono Uppercase (#8A7963) • Reach Stat: 14px Plus Jakarta Sans Bold (#141414).',
+                  images: 'Creator Portraits: 3:4 Aspect Ratio High-Fashion Editorial Photography, Warm Tone Graded, 1px #DCD6CA border.',
+                  cardStyle: 'Flat Talent Card: Background #FAF8F5, Border 1px #DCD6CA, Radius 10px, Inner Padding 20px.',
+                  buttonStyle: 'Pill Tag: 10px Mono Uppercase, Background #EBE7DF, Text #4A453E.',
+                  icons: 'Users, Award, Crown (14px) in Antique Bronze.',
+                  background: 'Warm Sand Background Canvas (#F5F1E8).',
+                  borderRadius: 'Talent Cards: 10px | Images: 8px.',
+                  shadows: '0px.',
+                  motion: 'Card hover: 300ms ease transition, subtle +2px vertical lift.',
+                  hoverEffects: 'Portrait image scales 1.02x within clip mask; border turns #8A7963.'
+                },
+                {
+                  id: 'sec-process',
+                  name: '07. Process & Methodology',
+                  layout: 'Horizontal 4-Step Linear Timeline anchored by Connecting Hairline Guide Line (#EBE7DF).',
+                  grid: '12-Column Grid Split into 4 Equal 3-Column Process Step Columns (Gutter: 24px).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Step Padding: 24px, Step Gap: 24px.',
+                  typography: 'Phase Number: 12px Mono Bold Uppercase (#8A7963) • Phase Title: 24px Cormorant Garamond (#141414) • Phase Body: 13px Plus Jakarta Sans (#5A5245).',
+                  images: 'N/A.',
+                  cardStyle: 'Flat Step Box: Background #FAF8F5, Border 1px #DCD6CA, Radius 8px, Inner Padding 24px.',
+                  buttonStyle: 'N/A.',
+                  icons: 'CheckCircle2, Compass, Cpu, FileText (16px) in Antique Bronze.',
+                  background: 'Warm Alabaster Canvas (#FAF8F5).',
+                  borderRadius: 'Step Cards: 8px.',
+                  shadows: '0px.',
+                  motion: 'Timeline progress line fills from left to right as section scrolls into center viewport.',
+                  hoverEffects: 'Step Card: Background shifts to #F2EDE4; step number turns Onyx Charcoal.'
+                },
+                {
+                  id: 'sec-testimonials',
+                  name: '08. Testimonials & Executive Endorsements',
+                  layout: 'Dual-Column Side-by-Side Quote Cards with Large Decorative Serif Quotation Marks.',
+                  grid: '12-Column Grid Split into 2 Equal 6-Column Quote Columns (Gutter: 32px).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Quote Padding: 48px, Card Gap: 32px.',
+                  typography: 'Quote Copy: 24px Cormorant Garamond Light Italic (#141414) • Author Name: 14px Plus Jakarta Sans Bold (#141414) • Author Title: 11px Mono Uppercase (#8A7963).',
+                  images: 'Author Avatar or Brand Monogram Mark (40x40px, 1px border).',
+                  cardStyle: 'Luxury Endorsement Container: Background #FAF8F5, Border 1px #DCD6CA, Radius 12px, Inner Padding 48px.',
+                  buttonStyle: 'N/A.',
+                  icons: 'Quote mark (32px Cormorant Serif, #DCD6CA) + ShieldCheck (14px).',
+                  background: 'Warm Sand Background Canvas (#F5F1E8).',
+                  borderRadius: 'Quote Cards: 12px.',
+                  shadows: '0px.',
+                  motion: 'Staggered fade-in on scroll entry.',
+                  hoverEffects: 'Border turns Antique Bronze (#8A7963) on cursor focus.'
+                },
+                {
+                  id: 'sec-faq',
+                  name: '09. Frequently Asked Questions (FAQ)',
+                  layout: 'Centered Single Column Accordion List bounded by Hairline Section Dividers.',
+                  grid: '12-Column Grid (Centered Max-Width 800px / 8 Columns).',
+                  containerWidth: '800px Centered Container.',
+                  spacing: 'Padding Top: 128px, Padding Bottom: 128px, Item Padding: 24px vertical, Accordion Gap: 12px.',
+                  typography: 'Question: 16px Plus Jakarta Sans Medium (#141414) • Answer: 14px Plus Jakarta Sans Regular (Leading 1.6, #5A5245) • Category Tag: 10px Mono (#8A7963).',
+                  images: 'N/A.',
+                  cardStyle: 'Accordion Item: Flat bottom hairline border (1px #EBE7DF), 0px radius, 20px vertical padding.',
+                  buttonStyle: 'Accordion Trigger: Flex container with full width hover state.',
+                  icons: 'ChevronRight / Plus (16px) in Antique Bronze (#8A7963) with 90-degree rotation transform on open.',
+                  background: 'Warm Alabaster Canvas (#FAF8F5).',
+                  borderRadius: '0px (Clean hairline dividers).',
+                  shadows: '0px.',
+                  motion: 'Accordion Content Expand: 300ms ease-out height transition, opacity fade 0 to 1.',
+                  hoverEffects: 'Question Header Hover: Text color shifts to Antique Bronze (#8A7963).'
+                },
+                {
+                  id: 'sec-cta',
+                  name: '10. Primary Call To Action (CTA)',
+                  layout: 'Dual Lead Conversion Gateway: Side-by-Side 2-Column Cards (Dark Charcoal Enterprise Portal vs. Warm Alabaster Creator Portal).',
+                  grid: '12-Column Grid Split into 2 Equal 6-Column Conversion Portals (Gutter: 32px).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 160px, Padding Bottom: 160px, Inner Padding: 56px, Gap: 32px.',
+                  typography: 'Portal Title: 36px Cormorant Garamond SemiBold • Portal Copy: 14px Plus Jakarta Sans (Leading 1.6) • Badge: 10px Mono Uppercase.',
+                  images: 'N/A (Typography and high-contrast surface driven).',
+                  cardStyle: 'Portal A (Brands): Solid Charcoal #141414 background, Warm Alabaster text, 1px #333 border, 16px radius. Portal B (Creators): Alabaster #FAF8F5 background, 1px #DCD6CA border, 16px radius.',
+                  buttonStyle: 'Portal A Button: Warm Alabaster (#FAF8F5) background, Charcoal text, 12px Mono Uppercase bold. Portal B Button: Solid Charcoal (#141414) background, Warm Alabaster text.',
+                  icons: 'ArrowRight (14px) in gold/bronze accent inline.',
+                  background: 'Warm Sand Canvas (#F5F1E8).',
+                  borderRadius: 'Conversion Portals: 16px | Buttons: 6px.',
+                  shadows: '0px.',
+                  motion: 'Subtle focus highlight shift on form container interaction.',
+                  hoverEffects: 'Portal Card Hover: Border highlight turns Antique Bronze (#8A7963) with -2px Y elevation.'
+                },
+                {
+                  id: 'sec-footer',
+                  name: '11. Footer',
+                  layout: '4-Column Footer Navigation Matrix anchored by Top Hairline Divider (#EBE7DF) and Bottom Copyright Row.',
+                  grid: '12-Column Grid Split (4 Columns Logo/Bio, 2 Columns Brands, 2 Columns Creators, 4 Columns Offices & Legal).',
+                  containerWidth: '1280px Container.',
+                  spacing: 'Padding Top: 80px, Padding Bottom: 48px, Column Gap: 32px, Item Gap: 12px.',
+                  typography: 'Column Header: 10px Mono Uppercase (Tracked 0.14em, #8A7963) • Link Text: 13px Plus Jakarta Sans (#5A5245) • Copyright: 10px Mono (#8A7963).',
+                  images: 'Valtreon Brand Emblem Vector Icon.',
+                  cardStyle: 'N/A (Inline footer structure).',
+                  buttonStyle: 'N/A.',
+                  icons: 'Globe, Crown, Shield, Lock (14px) in #8A7963.',
+                  background: 'Warm Sand Footer Canvas (#F5F1E8) with 1px top border (#EBE7DF).',
+                  borderRadius: '0px.',
+                  shadows: '0px.',
+                  motion: 'Clean opacity transition on hover.',
+                  hoverEffects: 'Footer Link Hover: Color shifts from #5A5245 to #1A1A1A with subtle +2px right shift.'
+                }
+              ].map((fig) => (
+                <div key={fig.id} className="p-6 sm:p-8 bg-[#FAF8F5] border border-[#DCD6CA] rounded-xl space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#EBE7DF] pb-4 gap-2">
+                    <h3 className="text-2xl font-serif-display font-semibold text-[#1A1A1A]">
+                      {fig.name}
+                    </h3>
+                    <span className="text-[10px] font-mono px-2.5 py-1 bg-[#141414] text-[#FAF8F5] rounded">
+                      FIGMA COMPONENT SPEC
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-[#3D3830]">
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">1. LAYOUT & STRUCTURE</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]">{fig.layout}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">2. GRID & CONTAINER WIDTH</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]"><strong>Grid:</strong> {fig.grid}<br/><strong>Container:</strong> {fig.containerWidth}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">3. SPACING & PADDING</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]">{fig.spacing}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">4. TYPOGRAPHY HIERARCHY</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]">{fig.typography}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">5. IMAGERY & MEDIA TREATMENT</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]">{fig.images}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">6. CARD CONTAINERS & BORDERS</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]">{fig.cardStyle}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">7. BUTTONS, ICONS & CONTROLS</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]"><strong>Buttons:</strong> {fig.buttonStyle}<br/><strong>Icons:</strong> {fig.icons}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#F2EDE4] rounded border border-[#DCD6CA] space-y-1">
+                      <span className="text-[#8A7963] font-bold block uppercase text-[10px]">8. BACKGROUND, RADIUS & SHADOWS</span>
+                      <p className="text-[11px] leading-relaxed text-[#1A1A1A]"><strong>BG:</strong> {fig.background}<br/><strong>Radius:</strong> {fig.borderRadius}<br/><strong>Shadows:</strong> {fig.shadows}</p>
+                    </div>
+
+                    <div className="p-3 bg-[#141414] text-[#FAF8F5] rounded border border-[#333] space-y-1 col-span-1 md:col-span-2">
+                      <span className="text-[#A38B68] font-bold block uppercase text-[10px]">9. MOTION & HOVER INTERACTION PHYSICS</span>
+                      <p className="text-[11px] leading-relaxed text-[#DDD]"><strong>Motion:</strong> {fig.motion}<br/><strong>Hover Effect:</strong> {fig.hoverEffects}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
 
           </section>
